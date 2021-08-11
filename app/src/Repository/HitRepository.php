@@ -25,7 +25,7 @@ class HitRepository extends ServiceEntityRepository
      * @throws \Doctrine\ORM\NoResultException
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function getHits(string $shop): string
+    public function countCurrentShopHits(string $shop): string
     {
         return $this->createQueryBuilder('hits')
             ->select('count(hits.id)')

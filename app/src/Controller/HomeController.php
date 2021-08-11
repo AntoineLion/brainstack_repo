@@ -44,7 +44,7 @@ class HomeController extends AbstractController
     {
         $this->save($request);
         return $this->render('home/index.html.twig', [
-            'hits' => $this->hitRepository->getHits($request->server->get('HTTP_HOST'))
+            'hits' => $this->hitRepository->countCurrentShopHits($request->server->get('HTTP_HOST'))
         ]);
     }
 
@@ -57,7 +57,7 @@ class HomeController extends AbstractController
     {
         $this->save($request);
         return new JsonResponse([
-            'hits' => $this->hitRepository->getHits($request->server->get('HTTP_HOST'))
+            'hits' => $this->hitRepository->countCurrentShopHits($request->server->get('HTTP_HOST'))
         ]);
     }
 
