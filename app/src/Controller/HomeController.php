@@ -5,11 +5,11 @@ namespace App\Controller;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Hit;
+use App\Repository\HitRepository;
 
 class HomeController extends AbstractController
 {
@@ -17,7 +17,13 @@ class HomeController extends AbstractController
     /**
      * @var EntityManagerInterface
      */
-    protected $entityManager;
+    private EntityManagerInterface $entityManager;
+
+    /**
+     * @var HitRepository|\Doctrine\Persistence\ObjectRepository
+     */
+    private HitRepository $hitRepository;
+
 
     /**
      * HomeController constructor.
@@ -26,6 +32,7 @@ class HomeController extends AbstractController
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
+        $this->hitRepository = $entityManager->getRepository(Hit::class);
     }
 
     /**
@@ -37,7 +44,7 @@ class HomeController extends AbstractController
     {
         $this->save($request);
         return $this->render('home/index.html.twig', [
-            'hits' => $this->getHits($request->server->get('HTTP_HOST'))
+            'hits' => $this->hitRepository->getHits($request->server->get('HTTP_HOST'))
         ]);
     }
 
@@ -50,7 +57,7 @@ class HomeController extends AbstractController
     {
         $this->save($request);
         return new JsonResponse([
-            'hits' => $this->getHits($request->server->get('HTTP_HOST'))
+            'hits' => $this->hitRepository->getHits($request->server->get('HTTP_HOST'))
         ]);
     }
 
@@ -85,24 +92,6 @@ class HomeController extends AbstractController
             return false;
 
         }
-    }
-
-
-    /**
-     * @param string $shop
-     * @return string
-     * @throws \Doctrine\ORM\NoResultException
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     */
-    public function getHits(string $shop): string
-    {
-        $repository = $this->getDoctrine()->getRepository(Hit::class);
-        return $repository->createQueryBuilder('hits')
-            ->select('count(hits.id)')
-            ->where('hits.shop = :shop')
-            ->setParameter('shop', $shop)
-            ->getQuery()
-            ->getSingleScalarResult();
     }
 
 }

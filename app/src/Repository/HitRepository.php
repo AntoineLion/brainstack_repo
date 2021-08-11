@@ -19,32 +19,20 @@ class HitRepository extends ServiceEntityRepository
         parent::__construct($registry, Hit::class);
     }
 
-    // /**
-    //  * @return Hit[] Returns an array of Hit objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param string $shop
+     * @return string
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function getHits(string $shop): string
     {
-        return $this->createQueryBuilder('h')
-            ->andWhere('h.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('h.id', 'ASC')
-            ->setMaxResults(10)
+        return $this->createQueryBuilder('hits')
+            ->select('count(hits.id)')
+            ->where('hits.shop = :shop')
+            ->setParameter('shop', $shop)
             ->getQuery()
-            ->getResult()
-        ;
+            ->getSingleScalarResult();
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Hit
-    {
-        return $this->createQueryBuilder('h')
-            ->andWhere('h.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }
