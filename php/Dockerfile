@@ -16,3 +16,12 @@ RUN curl -sS https://get.symfony.com/cli/installer | bash
 RUN mv /root/.symfony/bin/symfony /usr/local/bin/symfony
 RUN git config --global user.email "shinaga17@gmail.com" \
     && git config --global user.name "Anton"
+
+RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
+
+RUN echo 'browscap=/usr/local/etc/php/extra/browscap.ini' >> /usr/local/etc/php/php.ini
+
+RUN mkdir -p /usr/local/etc/php/extra/ \
+    && curl "http://browscap.org/stream?q=Full_PHP_BrowsCapINI" -o /usr/local/etc/php/extra/browscap.ini \
+
+
